@@ -4,233 +4,445 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>🎁 Secret Scratch Card</title>
-    <meta name="theme-color" content="#1a1a2e">
-    
-    <meta property="og:title" content="🎁 Aapke liye ek Secret Card hai!">
-    <meta property="og:description" content="Kisine aapke liye ek surprise message bheja hai. Card ko scratch karke dekhiye!">
+    <title>Top Secret Message 🕵️‍♂️</title>
+    <meta name="title" content="Top Secret Message 🕵️‍♂️">
+    <meta name="description" content="I have sent you a locked, self-destructing scratch card. Do you have the PIN to open it?">
+    <meta name="theme-color" content="#0f172a">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="🔒 You Received a Locked Scratch Card!">
+    <meta property="og:description" content="Someone sent you a secret message. You need a 4-digit PIN to scratch and reveal it.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop">
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="🔒 You Received a Locked Scratch Card!">
+    <meta property="twitter:description" content="Someone sent you a secret message. You need a 4-digit PIN to scratch and reveal it.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; touch-action: manipulation; }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; touch-action: manipulation; }
+
+        /* THEME VARIABLES */
+        :root {
+            --bg-grad-1: #1e293b; --bg-grad-2: #0f172a;
+            --accent: #38bdf8; --accent-glow: rgba(56,189,248,0.3);
+            --container-bg: rgba(30, 41, 59, 0.7);
+        }
+
+        /* LOVE THEME */
+        body.theme-love {
+            --bg-grad-1: #831843; --bg-grad-2: #4c0519;
+            --accent: #f43f5e; --accent-glow: rgba(244,63,94,0.3);
+            --container-bg: rgba(80, 7, 36, 0.7);
+        }
+
+        /* PARTY THEME */
+        body.theme-party {
+            --bg-grad-1: #581c87; --bg-grad-2: #2e1065;
+            --accent: #fbbf24; --accent-glow: rgba(251,191,36,0.3);
+            --container-bg: rgba(59, 7, 100, 0.7);
+        }
 
         body {
-            background: radial-gradient(circle at center, #2b2b45 0%, #121220 100%);
-            color: white; min-height: 100vh; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; overflow: hidden; padding: 20px;
+            background-color: var(--bg-grad-2);
+            background-image: radial-gradient(circle at 50% 0%, var(--bg-grad-1) 0%, var(--bg-grad-2) 70%);
+            color: #e2e8f0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; padding: 15px; transition: background 0.5s ease;
         }
 
         .container {
             width: 100%; max-width: 420px; text-align: center;
-            background: rgba(255, 255, 255, 0.05); padding: 30px 20px; border-radius: 20px;
-            backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: var(--container-bg); padding: 30px 20px; border-radius: 20px;
+            backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative;
+            transition: all 0.5s ease;
         }
 
-        h1 { font-size: 26px; margin-bottom: 5px; background: linear-gradient(to right, #00d2ff, #3a7bd5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { color: #a0aab2; font-size: 15px; margin-bottom: 25px; }
+        h1 { font-size: 26px; margin-bottom: 5px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-glow); }
+        p.sub { color: #cbd5e1; font-size: 14px; margin-bottom: 25px; }
+
+        /* THEME SELECTOR */
+        .theme-selector {
+            display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px;
+        }
+        .theme-selector label {
+            flex: 1; padding: 10px 5px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .theme-selector label:hover { background: rgba(255,255,255,0.1); }
+        .theme-selector input[type="radio"] { display: none; }
+        .theme-selector input[type="radio"]:checked + span { color: var(--accent); }
+        .theme-selector input[type="radio"]:checked ~ label { border-color: var(--accent); background: var(--accent-glow); }
+        
+        /* Highlight active label via JS since CSS adjacent sibling is tricky with this DOM */
+        .theme-label.active { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+
+        /* Inputs */
+        .input-group { position: relative; margin-bottom: 15px; }
+        textarea, input[type="number"] {
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0, 0, 0, 0.4); color: white; outline: none; font-size: 16px;
+            transition: all 0.3s;
+        }
+        textarea { resize: none; height: 90px; }
+        textarea:focus, input[type="number"]:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        
+        .pin-badge {
+            position: absolute; right: 15px; top: 15px; color: #ef4444; font-size: 12px; font-weight: bold;
+            display: flex; align-items: center; gap: 5px; background: rgba(239,68,68,0.2); padding: 3px 8px; border-radius: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 16px;
+            font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent-glow); }
+        .btn-danger { background: #ef4444; color: white; box-shadow: 0 0 20px rgba(239,68,68,0.3); }
+        .btn-whatsapp { background: #25D366; color: white; }
 
         /* Scratch Card */
         .scratch-card-wrapper {
             position: relative; width: 300px; height: 180px; margin: 0 auto 25px;
-            border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #fff;
+            border-radius: 15px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            background: #fff; border: 3px solid var(--accent);
         }
-
         .message-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            padding: 20px; font-size: 22px; font-weight: bold; color: #1e293b;
-            text-align: center; word-break: break-word;
+            padding: 20px; font-size: 20px; font-weight: bold; color: #1e293b;
+            text-align: center; word-break: break-word; background: #f8fafc;
         }
+        canvas#scratchCanvas { position: absolute; top: 0; left: 0; cursor: crosshair; z-index: 2; }
 
-        canvas#scratchCanvas { position: absolute; top: 0; left: 0; cursor: pointer; z-index: 2; }
+        /* Views */
+        #createView, #pinView, #scratchView, #destroyedView, #shareArea { display: none; }
+        #createView.active, #pinView.active, #scratchView.active, #destroyedView.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Inputs & Buttons */
-        textarea {
-            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.3); color: white; margin-bottom: 20px; outline: none;
-            font-size: 16px; resize: none; height: 100px;
-        }
-        textarea:focus { border-color: #00d2ff; }
-
-        .btn {
-            width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 16px;
-            font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;
-        }
-        .btn:active { transform: scale(0.95); }
-        
-        .btn-primary { background: linear-gradient(45deg, #00d2ff, #3a7bd5); color: white; box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
-        .btn-whatsapp { background: #25D366; color: white; box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
-        .btn-copy { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
-
-        /* Share Area */
-        #shareArea { display: none; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        /* Utilities */
         .link-input {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.5); color: #00d2ff; margin-bottom: 15px; outline: none; text-align: center;
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px dashed var(--accent);
+            background: rgba(0,0,0,0.5); color: var(--accent); margin-bottom: 15px; text-align: center; font-size: 13px;
         }
-
+        .warning { color: #ef4444; font-size: 50px; margin-bottom: 10px; animation: pulse 1s infinite alternate;}
+        @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.1);} }
+        
         #confetti-canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 100; }
         
         #toast {
             position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%);
-            background: #fff; color: #000; padding: 10px 20px; border-radius: 30px;
-            font-weight: bold; transition: 0.3s; opacity: 0; z-index: 1000;
+            background: var(--accent); color: #000; padding: 10px 20px; border-radius: 30px;
+            font-weight: bold; transition: 0.3s; opacity: 0; z-index: 1000; box-shadow: 0 0 20px var(--accent-glow);
         }
         #toast.show { bottom: 20px; opacity: 1; }
     </style>
 </head>
-<body>
-
+<body class="theme-hacker" id="mainBody">
     <canvas id="confetti-canvas"></canvas>
 
-    <div class="container" id="createView">
-        <h1>Secret Scratch Card</h1>
-        <p>Apne doston ke liye ek gupt sandesh likhein</p>
+    <div class="container active" id="createView">
+        <h1>Card Creator 🎨</h1>
+        <p class="sub">Select a theme and encrypt your message.</p>
+
+        <div class="theme-selector" id="themeOptions">
+            <label class="theme-label active" onclick="previewTheme('hacker')">
+                <input type="radio" name="theme" value="hacker" checked>
+                <span style="font-size: 20px;">👨‍💻</span> Hacker
+            </label>
+            <label class="theme-label" onclick="previewTheme('love')">
+                <input type="radio" name="theme" value="love">
+                <span style="font-size: 20px;">❤️</span> Romantic
+            </label>
+            <label class="theme-label" onclick="previewTheme('party')">
+                <input type="radio" name="theme" value="party">
+                <span style="font-size: 20px;">🎉</span> Party
+            </label>
+        </div>
         
-        <textarea id="userInput" placeholder="Yaha apna secret message likho (Emojis allowed)..." maxlength="150"></textarea>
+        <textarea id="userInput" placeholder="Type your secret message here (Emojis allowed)..."></textarea>
+        
+        <div class="input-group">
+            <input type="number" id="pinInput" placeholder="Set 4-Digit PIN" pattern="\d{4}" maxlength="4">
+            <span class="pin-badge">🔒 REQUIRED</span>
+        </div>
+
         <button class="btn btn-primary" id="genBtn">✨ Generate Magic Link</button>
 
         <div id="shareArea">
-            <p style="color: #fff; margin-top: 10px;">Link Ready Hai! 👇</p>
+            <p style="margin: 15px 0 10px; font-size: 14px; color: #fff;">Secret Link Ready! 👇</p>
             <input type="text" id="generatedLink" class="link-input" readonly>
             
-            <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">📱 Direct WhatsApp Pe Bhejo</button>
-            <button class="btn btn-copy" onclick="copyLink()" id="copyBtn">📋 Link Copy Karo</button>
-            <button class="btn btn-copy" onclick="location.reload()" style="margin-top: 20px; border: none;">🔄 Naya Banao</button>
+            <button class="btn btn-whatsapp" onclick="sendToWhatsApp()">📱 Share on WhatsApp</button>
+            <button class="btn btn-primary" onclick="copyLink()" style="background: transparent; border: 2px solid var(--accent); color: #fff;">📋 Copy Link</button>
+            <button class="btn btn-danger" onclick="location.reload()" style="margin-top: 15px; background: transparent; color: #ef4444; border: none; box-shadow: none;">🔄 Create New</button>
         </div>
     </div>
 
-    <div class="container" id="scratchView" style="display: none;">
-        <h1>Surprise! 🎁</h1>
-        <p>Niche diye gaye card ko scratch karke dekho</p>
+    <div class="container" id="pinView">
+        <h1>Locked File 🔒</h1>
+        <p class="sub">Enter the 4-digit PIN to access this scratch card.</p>
+        <input type="number" id="receiverPin" placeholder="****" style="text-align: center; font-size: 28px; letter-spacing: 15px; margin-bottom: 20px; font-weight: bold;">
+        <button class="btn btn-primary" id="unlockBtn">🔓 Unlock File</button>
+        <p id="pinError" style="color: #ef4444; display: none; margin-top: 15px; font-weight: bold;">❌ Incorrect PIN!</p>
+    </div>
+
+    <div class="container" id="scratchView">
+        <h1 id="scratchTitle">Classified 🕵️</h1>
+        <p class="sub" style="color:#ef4444; font-weight:bold;">Warning: Will self-destruct after scratching!</p>
         
         <div class="scratch-card-wrapper">
             <div class="message-layer" id="revealedMessage"></div>
             <canvas id="scratchCanvas" width="300" height="180"></canvas>
         </div>
-        
-        <button class="btn btn-primary" onclick="window.location.href = window.location.pathname">Mera Apna Card Banao</button>
     </div>
 
-    <div id="toast">📋 Link Copied!</div>
+    <div class="container" id="destroyedView">
+        <div class="warning">💥</div>
+        <h1 style="color: #ef4444;">Destroyed</h1>
+        <p class="sub">This message was already read and has been permanently deleted from this device's memory.</p>
+        <button class="btn btn-primary" onclick="window.location.href = window.location.pathname">Create Your Own Card</button>
+    </div>
+
+    <div id="toast">Link Copied!</div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        // --- 1. SETUP & URL CHECK ---
-        const createView = document.getElementById('createView');
-        const scratchView = document.getElementById('scratchView');
-        const urlParams = new URLSearchParams(window.location.search);
-        const secretData = urlParams.get('m');
+        // DOM Elements
+        const views = {
+            create: document.getElementById('createView'),
+            pin: document.getElementById('pinView'),
+            scratch: document.getElementById('scratchView'),
+            destroyed: document.getElementById('destroyedView')
+        };
+        const shareArea = document.getElementById('shareArea');
+        const genBtn = document.getElementById('genBtn');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const mainBody = document.getElementById('mainBody');
+        
+        let audioCtx;
+        let encryptedPayload = "";
+        let currentTheme = 'hacker';
 
-        // Safe Encoding/Decoding for Emojis & Hindi
+        // --- THEME PREVIEW LOGIC ---
+        function previewTheme(themeName) {
+            currentTheme = themeName;
+            mainBody.className = `theme-${themeName}`;
+            
+            // Update active label style
+            document.querySelectorAll('.theme-label').forEach(lbl => lbl.classList.remove('active'));
+            document.querySelector(`input[value="${themeName}"]`).parentElement.classList.add('active');
+        }
+
+        // --- CRYPTOGRAPHY ENGINE (XOR Cipher + Base64) ---
+        function cipher(text, pin) {
+            let result = '';
+            const key = pin.toString();
+            for(let i=0; i<text.length; i++) {
+                result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return result;
+        }
+
         const encodeMsg = (str) => btoa(encodeURIComponent(str));
         const decodeMsg = (str) => decodeURIComponent(atob(str));
 
-        if (secretData) {
-            createView.style.display = 'none';
-            scratchView.style.display = 'block';
-            try {
-                document.getElementById('revealedMessage').innerText = decodeMsg(secretData);
-                initScratchCard();
-            } catch(e) {
-                document.getElementById('revealedMessage').innerText = "Card Expired ya Link Galat Hai!";
-                initScratchCard();
+        // --- URL PARSING LOGIC ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlData = urlParams.get('p'); // p = payload
+        const urlTheme = urlParams.get('t'); // t = theme
+
+        function switchView(viewName) {
+            Object.values(views).forEach(v => v.classList.remove('active'));
+            views[viewName].classList.add('active');
+        }
+
+        if (urlData) {
+            // Apply Receiver's Theme
+            if(urlTheme) previewTheme(urlTheme);
+
+            if (localStorage.getItem('destroyed_' + urlData)) {
+                switchView('destroyed');
+            } else {
+                encryptedPayload = urlData;
+                switchView('pin');
             }
         }
 
-        // --- 2. LINK GENERATION & SHARING ---
-        document.getElementById('genBtn').onclick = () => {
+        // --- GENERATE LINK ---
+        genBtn.onclick = () => {
             const msg = document.getElementById('userInput').value.trim();
-            if(!msg) return alert("Pehle message toh likho bhai!");
+            const pin = document.getElementById('pinInput').value.trim();
             
-            const encoded = encodeMsg(msg);
-            const shareUrl = window.location.origin + window.location.pathname + '?m=' + encoded;
-            
+            if(!msg) return alert("Message cannot be empty!");
+            if(pin.length !== 4) return alert("Please enter a valid 4-digit PIN!");
+
+            // Encrypt
+            const encodedText = encodeURIComponent(msg);
+            const ciphered = cipher(encodedText, pin);
+            const finalPayload = btoa(ciphered);
+
+            // Construct URL with Payload and Theme
+            const shareUrl = window.location.origin + window.location.pathname + `?p=${finalPayload}&t=${currentTheme}`;
             document.getElementById('generatedLink').value = shareUrl;
+            
+            genBtn.style.display = 'none';
             document.getElementById('userInput').style.display = 'none';
-            document.getElementById('genBtn').style.display = 'none';
-            document.getElementById('shareArea').style.display = 'block';
+            document.getElementById('pinInput').parentElement.style.display = 'none';
+            document.getElementById('themeOptions').style.display = 'none';
+            shareArea.style.display = 'block';
         };
 
         function sendToWhatsApp() {
             const url = document.getElementById('generatedLink').value;
-            const text = `🎁 Dekho maine tumhare liye ek Secret Card bheja hai! Ise jaldi scratch karke dekho: \n\n${url}`;
+            const pin = document.getElementById('pinInput').value;
+            const text = `🤫 *Top Secret Message for you!*\n\nMaine ek locked scratch card bheja hai. Ise open karne ke liye yeh PIN use karna:\n*PIN:* ${pin}\n\nLink 👇\n${url}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         function copyLink() {
             const linkInput = document.getElementById('generatedLink');
             linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // For mobile devices
-
-            try {
-                navigator.clipboard.writeText(linkInput.value).then(() => {
-                    showToast();
-                });
-            } catch (err) {
-                // Fallback for older browsers
-                document.execCommand("copy");
-                showToast();
-            }
+            linkInput.setSelectionRange(0, 99999);
+            try { navigator.clipboard.writeText(linkInput.value).then(showToast); } 
+            catch (err) { document.execCommand("copy"); showToast(); }
         }
 
         function showToast() {
             const toast = document.getElementById('toast');
             toast.classList.add('show');
-            document.getElementById('copyBtn').innerText = "✅ Copied!";
-            setTimeout(() => { 
-                toast.classList.remove('show'); 
-                document.getElementById('copyBtn').innerText = "📋 Link Copy Karo";
-            }, 2000);
+            setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        // --- 3. ADVANCED SCRATCH CARD LOGIC ---
+        // --- UNLOCK LOGIC ---
+        unlockBtn.onclick = () => {
+            const enteredPin = document.getElementById('receiverPin').value.trim();
+            if(enteredPin.length !== 4) return;
+
+            try {
+                const deciphered = cipher(atob(encryptedPayload), enteredPin);
+                const decodedMsg = decodeURIComponent(deciphered);
+                
+                document.getElementById('revealedMessage').innerText = decodedMsg;
+                switchView('scratch');
+                initScratchCard();
+                initAudio();
+            } catch(e) {
+                document.getElementById('pinError').style.display = 'block';
+                setTimeout(() => document.getElementById('pinError').style.display = 'none', 2000);
+            }
+        };
+
+        // --- PROCEDURAL AUDIO ENGINE ---
+        function initAudio() {
+            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if(audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playScratchSound() {
+            if(!audioCtx) return;
+            const bufferSize = audioCtx.sampleRate * 0.1;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.value = 1000 + Math.random() * 500;
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+            noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+            noise.start();
+        }
+
+        // --- MULTI-THEME SCRATCH CARD LOGIC ---
         function initScratchCard() {
             const canvas = document.getElementById('scratchCanvas');
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const title = document.getElementById('scratchTitle');
             
-            // Draw Silver Foil
-            const grad = ctx.createLinearGradient(0, 0, 300, 180);
-            grad.addColorStop(0, '#a8b2c1');
-            grad.addColorStop(0.5, '#cfd8dc');
-            grad.addColorStop(1, '#a8b2c1');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 300, 180);
+            // Theme specific Canvas Drawing
+            if (currentTheme === 'love') {
+                title.innerText = "With Love ❤️";
+                const grad = ctx.createLinearGradient(0, 0, 300, 180);
+                grad.addColorStop(0, '#fda4af'); grad.addColorStop(0.5, '#ffe4e6'); grad.addColorStop(1, '#fda4af');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 300, 180);
+                ctx.fillStyle = "#e11d48";
+                ctx.font = "bold 22px Space Grotesk";
+                ctx.textAlign = "center";
+                ctx.fillText("SCRATCH WITH LOVE", 150, 95);
+            } 
+            else if (currentTheme === 'party') {
+                title.innerText = "Surprise! 🎉";
+                const grad = ctx.createLinearGradient(0, 0, 300, 180);
+                grad.addColorStop(0, '#fde047'); grad.addColorStop(0.5, '#fef08a'); grad.addColorStop(1, '#fde047');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 300, 180);
+                
+                // Add sparkles
+                for(let i=0; i<50; i++) {
+                    ctx.fillStyle = "rgba(255,255,255,0.8)";
+                    ctx.beginPath(); ctx.arc(Math.random()*300, Math.random()*180, Math.random()*3, 0, Math.PI*2); ctx.fill();
+                }
 
-            // Draw "Scratch Here" text
-            ctx.fillStyle = "#455a64";
-            ctx.font = "bold 20px Outfit";
-            ctx.textAlign = "center";
-            ctx.fillText("✨ SCRATCH HERE ✨", 150, 95);
+                ctx.fillStyle = "#854d0e";
+                ctx.font = "bold 22px Space Grotesk";
+                ctx.textAlign = "center";
+                ctx.fillText("SCRATCH TO CELEBRATE", 150, 95);
+            } 
+            else { // Hacker (Default)
+                title.innerText = "Classified 🕵️";
+                ctx.fillStyle = '#475569';
+                ctx.fillRect(0, 0, 300, 180);
+                for(let i=0; i<5000; i++) {
+                    ctx.fillStyle = Math.random() > 0.5 ? '#334155' : '#64748b';
+                    ctx.fillRect(Math.random()*300, Math.random()*180, 2, 2);
+                }
+                ctx.fillStyle = "#cbd5e1";
+                ctx.font = "bold 22px Space Grotesk";
+                ctx.textAlign = "center";
+                ctx.fillText("SCRATCH TO REVEAL", 150, 95);
+            }
 
             let isDrawing = false;
             let revealed = false;
+            let lastSoundTime = 0;
 
             function getCoordinates(e) {
                 const rect = canvas.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
+                return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
             function scratch(e) {
                 if (!isDrawing) return;
-                e.preventDefault(); // Stop scrolling while scratching on mobile
+                e.preventDefault();
                 
                 const pos = getCoordinates(e);
                 ctx.globalCompositeOperation = 'destination-out';
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 22, 0, Math.PI * 2); // 22 is brush size
+                ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
                 ctx.fill();
+                
+                const now = Date.now();
+                if (now - lastSoundTime > 50) {
+                    playScratchSound();
+                    if (navigator.vibrate) navigator.vibrate(10);
+                    lastSoundTime = now;
+                }
                 
                 checkScratchPercent();
             }
@@ -244,31 +456,30 @@
 
             function checkScratchPercent() {
                 if (revealed) return;
-                
-                // Calculate transparent pixels
                 const imageData = ctx.getImageData(0, 0, 300, 180);
                 const pixels = imageData.data;
                 let clearPixels = 0;
 
-                // Check every 4th value (Alpha channel)
                 for (let i = 3; i < pixels.length; i += 16) { 
                     if (pixels[i] < 128) clearPixels++;
                 }
 
-                // Total pixels checked = (300 * 180) / 4 = 13500
                 const percent = (clearPixels / 13500) * 100;
                 
-                if (percent > 40) { // Reveal completely at 40% scratched
+                if (percent > 45) {
                     revealed = true;
-                    ctx.clearRect(0, 0, 300, 180); // Clear remaining foil
+                    ctx.clearRect(0, 0, 300, 180);
+                    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                     
-                    // Trigger Confetti
-                    confetti({
-                        particleCount: 150,
-                        spread: 80,
-                        origin: { y: 0.6 },
-                        colors: ['#00d2ff', '#3a7bd5', '#ffffff', '#ff4757']
-                    });
+                    // Theme Specific Confetti
+                    let confettiColors = ['#38bdf8', '#ef4444', '#ffffff'];
+                    if(currentTheme === 'love') confettiColors = ['#f43f5e', '#fda4af', '#ffffff'];
+                    if(currentTheme === 'party') confettiColors = ['#fbbf24', '#fde047', '#ffffff'];
+
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: confettiColors });
+                    
+                    // Trigger Self Destruct
+                    localStorage.setItem('destroyed_' + urlData, 'true');
                 }
             }
         }
