@@ -13,17 +13,11 @@
 
     <script src="https://5gvci.com/act/files/tag.min.js?z=10722092" data-cfasync="false" async></script>
 
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="🔒 You Received a Locked Scratch Card!">
-    <meta property="og:description" content="Someone sent you a secret message. You need a 4-digit PIN to scratch and reveal it.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop">
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
 
-        /* THEME VARIABLES */
         :root {
             --bg-grad-1: #1e293b; --bg-grad-2: #0f172a;
             --accent: #38bdf8; --accent-glow: rgba(56,189,248,0.3);
@@ -36,13 +30,9 @@
 
         body {
             background-color: var(--bg-grad-2); background-image: radial-gradient(circle at 50% 0%, var(--bg-grad-1) 0%, var(--bg-grad-2) 70%);
-            color: #e2e8f0; 
-            min-height: 100dvh; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow-x: hidden; overflow-y: auto; 
-            padding: 20px 15px; transition: background 0.5s ease; perspective: 1000px;
-            overscroll-behavior: none; /* Mobile me pull-to-refresh rokne ke liye */
-            -webkit-font-smoothing: antialiased;
+            color: #e2e8f0; min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow-x: hidden; overflow-y: auto; padding: 20px 15px; transition: background 0.5s ease; perspective: 1000px;
+            overscroll-behavior: none; -webkit-font-smoothing: antialiased;
         }
 
         .container {
@@ -54,7 +44,6 @@
         h1 { font-size: clamp(22px, 6vw, 26px); margin-bottom: 5px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-glow); }
         p.sub { color: #cbd5e1; font-size: 13px; margin-bottom: 25px; }
 
-        /* THEME SELECTOR */
         .theme-selector { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
         .theme-label {
             flex: 1; min-width: 70px; padding: 10px 5px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
@@ -64,17 +53,14 @@
         .theme-label input[type="radio"] { display: none; }
         .theme-label.active { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
 
-        /* Inputs */
         .input-group { position: relative; margin-bottom: 15px; }
-        textarea, input[type="number"], input[type="datetime-local"], input[type="text"] {
+        textarea, input[type="number"], input[type="datetime-local"], input[type="text"], input[type="url"], input[type="password"] {
             width: 100%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0, 0, 0, 0.4); color: white; outline: none; font-size: 16px; transition: all 0.3s;
-            -webkit-appearance: none; 
+            background: rgba(0, 0, 0, 0.4); color: white; outline: none; font-size: 16px; transition: all 0.3s; -webkit-appearance: none; 
         }
         textarea { resize: none; height: 90px; }
         textarea:focus, input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-        /* Buttons */
         .btn {
             width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold; cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;
@@ -84,71 +70,74 @@
         .btn-primary { background: var(--accent); color: #000; box-shadow: 0 0 20px var(--accent-glow); }
         .btn-whatsapp { background: #25D366; color: white; }
 
-        /* Create Own Button Magic Reveal */
         #createOwnBtn { display: none; animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; margin-top: 20px; border: 2px dashed var(--accent); background: rgba(0,0,0,0.5); color: #fff;}
         @keyframes popUp { 0% { opacity: 0; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1); } }
 
-        /* Scratch Card */
+        /* Scratch Card updated for Image */
         .scratch-card-wrapper {
-            position: relative; width: 100%; max-width: 300px; aspect-ratio: 5/3; margin: 0 auto 10px;
+            position: relative; width: 100%; max-width: 300px; aspect-ratio: 5/4; margin: 0 auto 10px;
             border-radius: 15px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             background: #fff; border: 3px solid var(--accent); transform-style: preserve-3d; transition: transform 0.1s ease-out;
-            touch-action: none; will-change: transform; /* Smooth 3D tilt performance */
-        }
-        .scratch-card-wrapper::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
-            transform: rotate(30deg) translateY(-100%); transition: 0.1s; pointer-events: none; z-index: 5; mix-blend-mode: overlay;
+            touch-action: none; will-change: transform; 
         }
         .message-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 20px; font-size: clamp(16px, 5vw, 20px); font-weight: bold; color: #1e293b; text-align: center; word-break: break-word; background: #f8fafc;
         }
+        .message-layer img { max-width: 100%; max-height: 70%; border-radius: 10px; margin-bottom: 10px; display: none; object-fit: contain; }
         canvas#scratchCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: crosshair; z-index: 2; touch-action: none; }
 
-        /* Fingerprint Scanner */
+        /* Biometrics */
         .scanner-box {
             width: 100px; height: 100px; margin: 20px auto; border: 2px solid var(--accent); border-radius: 20px;
             display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer;
             box-shadow: inset 0 0 20px var(--accent-glow), 0 0 20px var(--accent-glow);
-            touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; 
+            touch-action: none; user-select: none; -webkit-user-select: none; 
         }
         .fingerprint-icon { font-size: 50px; opacity: 0.5; transition: 0.3s; pointer-events: none; }
-        .scan-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--accent); box-shadow: 0 0 10px var(--accent);
-            animation: scan 2s infinite linear; display: none; will-change: top;
-        }
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: scan 2s infinite linear; display: none; will-change: top; }
         .scanning .fingerprint-icon { opacity: 1; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
         .scanning .scan-line { display: block; }
         @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
 
-        /* Countdown Timer */
         .timer-box { font-size: clamp(30px, 8vw, 40px); font-weight: bold; color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); letter-spacing: 3px; margin: 20px 0; font-variant-numeric: tabular-nums; }
 
-        /* Jump Scare Image */
+        /* Matrix Canvas */
+        #matrixCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 50; display: none; background: #000; }
+
+        /* Glitch Effect */
+        .glitch-active { animation: glitchScreen 0.2s infinite; filter: hue-rotate(90deg) contrast(200%); }
+        @keyframes glitchScreen { 
+            0% { transform: translate(0) skew(0deg); } 
+            20% { transform: translate(-5px, 5px) skew(5deg); } 
+            40% { transform: translate(5px, -5px) skew(-5deg); } 
+            60% { transform: translate(-10px, 0) skew(10deg); } 
+            80% { transform: translate(10px, 5px) skew(-10deg); } 
+            100% { transform: translate(0) skew(0deg); } 
+        }
+
         #scareImg { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; object-fit: cover; z-index: 9999; display: none; }
 
-        /* Views */
         .view { display: none; }
         .view.active { display: block; animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        #toast { position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 14px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #toast { position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 14px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; z-index: 1000; }
         #toast.show { bottom: 20px; opacity: 1; }
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; pointer-events: none; z-index: 100; }
 
-        /* Ad Banner Link styling */
-        .direct-ad-banner {
-            margin-top: 25px; font-size: 13px; text-align: center;
-        }
-        .direct-ad-banner a {
-            color: rgba(255,255,255,0.6); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.4); padding-bottom: 2px; transition: color 0.2s;
-        }
+        .direct-ad-banner { margin-top: 25px; font-size: 13px; text-align: center; }
+        .direct-ad-banner a { color: rgba(255,255,255,0.6); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.4); padding-bottom: 2px; transition: color 0.2s; }
         .direct-ad-banner a:hover { color: var(--accent); border-color: var(--accent); }
+
+        /* Advanced Options Toggle */
+        .adv-btn { font-size: 12px; color: var(--accent); cursor: pointer; text-decoration: underline; margin-bottom: 15px; display: inline-block; }
+        #advOptions { display: none; }
     </style>
 </head>
 <body class="theme-hacker" id="mainBody">
     <canvas id="confetti-canvas"></canvas>
+    <canvas id="matrixCanvas"></canvas>
     
     <img id="scareImg" src="https://i.imgur.com/KOSq1V0.jpeg" alt="Scare">
 
@@ -170,9 +159,22 @@
             <input type="number" id="pinInput" placeholder="Set 4-Digit PIN" pattern="\d{4}" maxlength="4">
         </div>
 
-        <div class="input-group">
-            <p style="text-align: left; font-size: 12px; color: #a0aab2; margin-bottom: 5px;">Optional: Time-Lock (Unlock kab hoga?)</p>
-            <input type="datetime-local" id="timeInput">
+        <span class="adv-btn" onclick="document.getElementById('advOptions').style.display='block'; this.style.display='none';">Show Advanced Features +</span>
+
+        <div id="advOptions">
+            <div class="input-group">
+                <p style="text-align: left; font-size: 12px; color: #a0aab2; margin-bottom: 5px;">Secret Photo (URL paste karein)</p>
+                <input type="url" id="imgInput" placeholder="https://example.com/photo.jpg">
+            </div>
+            <div class="input-group">
+                <p style="text-align: left; font-size: 12px; color: #a0aab2; margin-bottom: 5px;">Custom Question Lock (Optional)</p>
+                <input type="text" id="qInput" placeholder="Eg: Hum pehli baar kahan mile?">
+                <input type="text" id="aInput" placeholder="Answer" style="margin-top: 8px;">
+            </div>
+            <div class="input-group">
+                <p style="text-align: left; font-size: 12px; color: #a0aab2; margin-bottom: 5px;">Time-Lock (Unlock kab hoga?)</p>
+                <input type="datetime-local" id="timeInput">
+            </div>
         </div>
 
         <button class="btn btn-primary" id="genBtn">✨ Generate Magic Link</button>
@@ -204,10 +206,12 @@
 
     <div class="container view" id="pinView">
         <h1>Locked File 🔒</h1>
-        <p class="sub">Identity verified. Enter the 4-digit PIN.</p>
-        <input type="number" id="receiverPin" placeholder="****" style="text-align: center; font-size: 28px; letter-spacing: 15px; margin-bottom: 20px;">
+        <p class="sub" id="lockInstruction">Identity verified. Enter the 4-digit PIN.</p>
+        <h3 id="customQuestionDisplay" style="display: none; color: #38bdf8; margin-bottom: 15px; font-size: 18px;"></h3>
+        
+        <input type="password" id="receiverPin" placeholder="****" style="text-align: center; font-size: 28px; letter-spacing: 15px; margin-bottom: 20px;">
         <button class="btn btn-primary" id="unlockBtn">🔓 Unlock</button>
-        <p id="pinError" style="color: #ef4444; display: none; font-weight: bold; margin-top: 10px;">❌ Incorrect PIN!</p>
+        <p id="pinError" style="color: #ef4444; display: none; font-weight: bold; margin-top: 10px;">❌ Incorrect Access Code!</p>
     </div>
 
     <div class="container view" id="scratchView">
@@ -215,7 +219,10 @@
         <p class="sub" style="color:#ef4444; font-weight:bold;">Self-destruct sequence armed!</p>
         
         <div class="scratch-card-wrapper" id="scratchWrapper">
-            <div class="message-layer" id="revealedMessage"></div>
+            <div class="message-layer">
+                <img id="revealedImg" src="" alt="Secret">
+                <span id="revealedMessage"></span>
+            </div>
             <canvas id="scratchCanvas"></canvas>
         </div>
         
@@ -235,31 +242,26 @@
 
     <div id="toast">Link Copied!</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         // --- ADVERTISEMENT LOGIC (6-Hour Popunder) ---
         function handlePopunderAd() {
             const lastPopunderTime = localStorage.getItem('popunder_last_shown');
             const currentTime = new Date().getTime();
-            const sixHoursInMs = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+            const sixHoursInMs = 6 * 60 * 60 * 1000; 
 
-            // Agar pehli baar hai ya 6 ghante guzar chuke hain
             if (!lastPopunderTime || (currentTime - lastPopunderTime > sixHoursInMs)) {
                 (function(s){
                     s.dataset.zone='10722090';
                     s.src='https://al5sm.com/tag.min.js';
                 })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-                
-                // Time ko save kar do localStorage mein
                 localStorage.setItem('popunder_last_shown', currentTime);
             }
         }
-        // Page load hote hi ad check chalega
         handlePopunderAd();
 
-        // DOM Elements & Globals
+        // Globals
         const views = { create: 'createView', timer: 'timerView', scan: 'scanView', pin: 'pinView', scratch: 'scratchView', destroyed: 'destroyedView' };
-        let audioCtx, encryptedPayload = "", currentTheme = 'hacker', unlockTime = 0, scanTimer;
+        let audioCtx, parsedPayload = {}, currentTheme = 'hacker', unlockTime = 0, scanTimer;
 
         function switchView(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -274,9 +276,9 @@
             document.querySelector(`input[value="${themeName}"]`).parentElement.classList.add('active');
         }
 
-        function cipher(text, pin) {
+        function cipher(text, key) {
             let result = '';
-            for(let i=0; i<text.length; i++) result += String.fromCharCode(text.charCodeAt(i) ^ pin.toString().charCodeAt(i % pin.toString().length));
+            for(let i=0; i<text.length; i++) result += String.fromCharCode(text.charCodeAt(i) ^ key.toString().charCodeAt(i % key.toString().length));
             return result;
         }
 
@@ -290,15 +292,14 @@
             if (localStorage.getItem('destroyed_' + urlData)) {
                 switchView('destroyed');
             } else {
-                encryptedPayload = urlData;
                 checkTimeLock();
             }
         }
 
         function checkTimeLock() {
-            if(!urlTime) return switchView('scan'); 
+            if(!urlTime) return setupUnlock(); 
             unlockTime = parseInt(urlTime);
-            if(new Date().getTime() >= unlockTime) switchView('scan');
+            if(new Date().getTime() >= unlockTime) setupUnlock();
             else { switchView('timer'); startCountdown(); }
         }
 
@@ -306,7 +307,7 @@
             const display = document.getElementById('countdownDisplay');
             const interval = setInterval(() => {
                 const distance = unlockTime - new Date().getTime();
-                if (distance < 0) { clearInterval(interval); switchView('scan'); return; }
+                if (distance < 0) { clearInterval(interval); setupUnlock(); return; }
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
@@ -314,17 +315,27 @@
             }, 1000);
         }
 
-        // --- FINGERPRINT LOGIC ---
+        function setupUnlock() {
+            const urlQ = urlParams.get('q');
+            if (urlQ) {
+                document.getElementById('lockInstruction').innerText = "Answer the secret question to unlock.";
+                document.getElementById('customQuestionDisplay').innerText = decodeURIComponent(urlQ);
+                document.getElementById('customQuestionDisplay').style.display = 'block';
+                document.getElementById('receiverPin').placeholder = "Your Answer";
+                document.getElementById('receiverPin').style.letterSpacing = "2px";
+                document.getElementById('receiverPin').type = "text";
+            }
+            switchView('scan');
+        }
+
+        // --- FINGERPRINT ---
         const scanner = document.getElementById('scannerArea');
         const scanText = document.getElementById('scanText');
         
         function startScan(e) {
-            e.preventDefault(); 
-            initAudio();
-            scanner.classList.add('scanning');
-            scanText.innerText = "Scanning... Hold still";
+            e.preventDefault(); initAudio();
+            scanner.classList.add('scanning'); scanText.innerText = "Scanning... Hold still";
             if(navigator.vibrate) navigator.vibrate([50, 50, 50]); 
-            
             scanTimer = setTimeout(() => {
                 scanner.classList.remove('scanning');
                 if(navigator.vibrate) navigator.vibrate(200); 
@@ -333,26 +344,27 @@
         }
 
         function stopScan(e) {
-            e.preventDefault();
-            clearTimeout(scanTimer);
-            scanner.classList.remove('scanning');
+            e.preventDefault(); clearTimeout(scanTimer); scanner.classList.remove('scanning');
             scanText.innerText = "Scan Failed! Try Again.";
             setTimeout(()=> { if(scanText.innerText === "Scan Failed! Try Again.") scanText.innerText = "Awaiting Fingerprint..."; }, 1500);
         }
 
-        scanner.addEventListener('mousedown', startScan);
-        scanner.addEventListener('touchstart', startScan, {passive: false});
-        scanner.addEventListener('mouseup', stopScan);
-        scanner.addEventListener('touchend', stopScan);
+        scanner.addEventListener('mousedown', startScan); scanner.addEventListener('touchstart', startScan, {passive: false});
+        scanner.addEventListener('mouseup', stopScan); scanner.addEventListener('touchend', stopScan);
         scanner.addEventListener('mouseleave', stopScan);
 
-        // --- LINK GEN ---
+        // --- LINK GEN (Fixes applied) ---
         document.getElementById('genBtn').onclick = () => {
             const msg = document.getElementById('userInput').value.trim();
             const pin = document.getElementById('pinInput').value.trim();
             const timeVal = document.getElementById('timeInput').value;
+            const imgUrl = document.getElementById('imgInput').value.trim();
+            const qVal = document.getElementById('qInput').value.trim();
+            const aVal = document.getElementById('aInput').value.trim().toLowerCase();
             
-            if(!msg || pin.length !== 4) return alert("Message aur 4-digit PIN zaruri hai!");
+            if(!msg) return alert("Secret message likhna zaruri hai!");
+            if(!qVal && pin.length !== 4) return alert("Ya toh 4-digit PIN daalo, ya Advanced me Custom Question set karo!");
+            if(qVal && !aVal) return alert("Question diya hai toh Answer bhi set karna padega!");
 
             let timeParam = "";
             if(timeVal) {
@@ -361,101 +373,122 @@
                 timeParam = `&d=${selectedTime}`;
             }
 
-            const ciphered = cipher(encodeURIComponent(msg), pin);
-            const shareUrl = window.location.origin + window.location.pathname + `?p=${btoa(ciphered)}&t=${currentTheme}${timeParam}`;
+            const payload = { m: msg };
+            if (imgUrl) payload.i = imgUrl;
+
+            const accessKey = qVal ? aVal : pin;
             
-            document.getElementById('generatedLink').value = shareUrl;
-            document.getElementById('shareArea').style.display = 'block';
-            document.getElementById('genBtn').style.display = 'none';
+            try {
+                // Bulletproof encoding without external compression libraries
+                const payloadStr = JSON.stringify(payload);
+                const encodedStr = encodeURIComponent(payloadStr);
+                const ciphered = cipher(encodedStr, accessKey);
+                const finalData = btoa(ciphered);
+                
+                let shareUrl = window.location.origin + window.location.pathname + `?p=${finalData}&t=${currentTheme}${timeParam}`;
+                if (qVal) shareUrl += `&q=${encodeURIComponent(qVal)}`;
+                
+                document.getElementById('generatedLink').value = shareUrl;
+                document.getElementById('shareArea').style.display = 'block';
+                document.getElementById('genBtn').style.display = 'none';
+            } catch (error) {
+                alert("Koi issue aaya link generate karne me! Message thoda chota try karein.");
+            }
         };
 
         function copyLink() {
-            const linkInput = document.getElementById('generatedLink');
-            linkInput.select(); linkInput.setSelectionRange(0, 99999);
+            const linkInput = document.getElementById('generatedLink'); linkInput.select(); linkInput.setSelectionRange(0, 99999);
             try { navigator.clipboard.writeText(linkInput.value); } catch(e) { document.execCommand("copy"); }
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
+            const toast = document.getElementById('toast'); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
         function sendToWhatsApp() {
             const url = document.getElementById('generatedLink').value;
-            window.open(`https://wa.me/?text=${encodeURIComponent("🔒 Top Secret! Tumhare liye ek locked file bheji hai. PIN maange toh batana.\n\n" + url)}`, '_blank');
+            window.open(`https://wa.me/?text=${encodeURIComponent("🔒 Top Secret! Tumhare liye ek locked file bheji hai. Unlock karke dekho.\n\n" + url)}`, '_blank');
         }
 
+        // --- UNLOCK LOGIC & MATRIX EFFECT ---
         document.getElementById('unlockBtn').onclick = () => {
-            const pin = document.getElementById('receiverPin').value.trim();
-            if(pin.length !== 4) return;
+            const enteredKey = document.getElementById('receiverPin').value.trim().toLowerCase();
+            if(!enteredKey) return;
             try {
-                const decodedMsg = decodeURIComponent(cipher(atob(encryptedPayload), pin));
-                document.getElementById('revealedMessage').innerText = decodedMsg;
-                switchView('scratch');
-                initScratchCard();
+                // Decrypt properly
+                const deciphered = cipher(atob(urlData), enteredKey);
+                const decodedStr = decodeURIComponent(deciphered);
+                parsedPayload = JSON.parse(decodedStr);
+                
+                if (parsedPayload.m) {
+                    document.getElementById('revealedMessage').innerText = parsedPayload.m;
+                    if(parsedPayload.i) {
+                        document.getElementById('revealedImg').src = parsedPayload.i;
+                        document.getElementById('revealedImg').style.display = 'block';
+                    }
+                    runMatrixEffect(); 
+                } else throw new Error();
             } catch(e) {
                 document.getElementById('pinError').style.display = 'block';
                 setTimeout(() => document.getElementById('pinError').style.display = 'none', 2000);
             }
         };
 
+        function runMatrixEffect() {
+            document.getElementById(views.pin).classList.remove('active');
+            const mCanvas = document.getElementById('matrixCanvas');
+            mCanvas.style.display = 'block';
+            const ctx = mCanvas.getContext('2d');
+            mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*".split("");
+            const fontSize = 16, columns = mCanvas.width / fontSize;
+            const drops = []; for(let x=0; x<columns; x++) drops[x] = 1;
+
+            const matrixInterval = setInterval(() => {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, mCanvas.width, mCanvas.height);
+                ctx.fillStyle = "#0F0"; ctx.font = fontSize + "px monospace";
+                for(let i=0; i<drops.length; i++) {
+                    const text = letters[Math.floor(Math.random() * letters.length)];
+                    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                    if(drops[i]*fontSize > mCanvas.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            }, 33);
+
+            setTimeout(() => {
+                clearInterval(matrixInterval);
+                mCanvas.style.display = 'none';
+                switchView('scratch');
+                initScratchCard();
+            }, 2500);
+        }
+
         // --- AUDIO ---
         function initAudio() { if(!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if(audioCtx.state === 'suspended') audioCtx.resume(); } }
-        
         function playScratchSound() {
-            if(!audioCtx) return;
-            const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.1, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+            if(!audioCtx) return; const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.1, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0); for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
             const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
             const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1500;
             const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
             noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); noise.start();
         }
-
         function playJumpScare() {
-            if(!audioCtx) return;
-            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(1000, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 0.1); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1);
+            if(!audioCtx) return; const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(1000, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(2000, audioCtx.currentTime + 0.1); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1);
             gain.gain.setValueAtTime(3, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
             osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 1);
         }
 
-        // --- 3D TILT ---
-        const scratchWrapper = document.getElementById('scratchWrapper');
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (e) => {
-                if(!e.beta || !e.gamma) return;
-                // requestAnimationFrame added for smoother tilt animation
-                requestAnimationFrame(() => {
-                    const rotateX = Math.max(-15, Math.min(15, e.beta - 45)); 
-                    const rotateY = Math.max(-15, Math.min(15, e.gamma));
-                    scratchWrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                });
-            });
-        }
-
-        // --- SCRATCH CARD LOGIC ---
+        // --- SCRATCH CARD & GLITCH ---
         function initScratchCard() {
             const canvas = document.getElementById('scratchCanvas');
-            canvas.width = scratchWrapper.clientWidth;
-            canvas.height = scratchWrapper.clientHeight;
+            const wrapper = document.getElementById('scratchWrapper');
+            canvas.width = wrapper.clientWidth; canvas.height = wrapper.clientHeight;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
             const cw = canvas.width, ch = canvas.height;
             
-            if (currentTheme === 'love') {
-                document.getElementById('scratchTitle').innerText = "With Love ❤️";
-                const grad = ctx.createLinearGradient(0,0,cw,ch); grad.addColorStop(0, '#fda4af'); grad.addColorStop(1, '#ffe4e6');
-                ctx.fillStyle = grad; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#e11d48";
-            } else if (currentTheme === 'party') {
-                document.getElementById('scratchTitle').innerText = "Surprise! 🎉";
-                const grad = ctx.createLinearGradient(0,0,cw,ch); grad.addColorStop(0, '#fde047'); grad.addColorStop(1, '#fef08a');
-                ctx.fillStyle = grad; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#854d0e";
-            } else if (currentTheme === 'prank') {
-                document.getElementById('scratchTitle').innerText = "Don't Scratch ⚠️";
-                ctx.fillStyle = '#220000'; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#ff0000";
-            } else {
-                ctx.fillStyle = '#475569'; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#cbd5e1";
-            }
+            if (currentTheme === 'love') { document.getElementById('scratchTitle').innerText = "With Love ❤️"; const grad = ctx.createLinearGradient(0,0,cw,ch); grad.addColorStop(0, '#fda4af'); grad.addColorStop(1, '#ffe4e6'); ctx.fillStyle = grad; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#e11d48"; } 
+            else if (currentTheme === 'party') { document.getElementById('scratchTitle').innerText = "Surprise! 🎉"; const grad = ctx.createLinearGradient(0,0,cw,ch); grad.addColorStop(0, '#fde047'); grad.addColorStop(1, '#fef08a'); ctx.fillStyle = grad; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#854d0e"; } 
+            else if (currentTheme === 'prank') { document.getElementById('scratchTitle').innerText = "Don't Scratch ⚠️"; ctx.fillStyle = '#220000'; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#ff0000"; } 
+            else { ctx.fillStyle = '#475569'; ctx.fillRect(0,0,cw,ch); ctx.fillStyle = "#cbd5e1"; }
             
             ctx.font = "bold 20px Space Grotesk"; ctx.textAlign = "center";
             ctx.fillText(currentTheme==='prank' ? "DO NOT SCRATCH!" : "SCRATCH TO REVEAL", cw/2, ch/2 + 5);
@@ -463,65 +496,48 @@
             let isDrawing = false, revealed = false, lastSoundTime = 0;
 
             function scratch(e) {
-                if (!isDrawing) return; 
-                e.preventDefault(); 
-                
-                // Makkhan smooth performance - use requestAnimationFrame
+                if (!isDrawing) return; e.preventDefault(); 
                 requestAnimationFrame(() => {
                     const rect = canvas.getBoundingClientRect();
                     const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
                     const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-                    
-                    const brushSize = cw * 0.08; 
-                    
-                    ctx.globalCompositeOperation = 'destination-out';
-                    ctx.beginPath(); ctx.arc(x, y, brushSize, 0, Math.PI * 2); ctx.fill();
-                    
+                    ctx.globalCompositeOperation = 'destination-out'; ctx.beginPath(); ctx.arc(x, y, cw * 0.08, 0, Math.PI * 2); ctx.fill();
                     if (Date.now() - lastSoundTime > 50) { playScratchSound(); if (navigator.vibrate) navigator.vibrate(10); lastSoundTime = Date.now(); }
                     
-                    // Slightly throttle the percentage check to avoid lagging old phones
+                    if (currentTheme === 'prank' && !revealed) document.body.classList.add('glitch-active');
+
                     if(Math.random() > 0.5) checkScratchPercent();
                 });
             }
 
-            canvas.addEventListener('mousedown', () => isDrawing = true);
-            canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, {passive: false});
-            window.addEventListener('mouseup', () => isDrawing = false);
-            window.addEventListener('touchend', () => isDrawing = false);
-            canvas.addEventListener('mousemove', scratch);
-            canvas.addEventListener('touchmove', scratch, {passive: false});
+            canvas.addEventListener('mousedown', () => isDrawing = true); canvas.addEventListener('touchstart', (e) => { isDrawing = true; scratch(e); }, {passive: false});
+            window.addEventListener('mouseup', () => { isDrawing = false; document.body.classList.remove('glitch-active'); }); 
+            window.addEventListener('touchend', () => { isDrawing = false; document.body.classList.remove('glitch-active'); });
+            canvas.addEventListener('mousemove', scratch); canvas.addEventListener('touchmove', scratch, {passive: false});
 
             function checkScratchPercent() {
                 if (revealed) return;
-                const pixels = ctx.getImageData(0, 0, cw, ch).data;
-                let clearPixels = 0;
+                const pixels = ctx.getImageData(0, 0, cw, ch).data; let clearPixels = 0;
                 for (let i = 3; i < pixels.length; i += 16) if (pixels[i] < 128) clearPixels++;
                 
                 if ((clearPixels / (cw * ch / 4)) * 100 > 40) {
-                    revealed = true; ctx.clearRect(0, 0, cw, ch);
+                    revealed = true; ctx.clearRect(0, 0, cw, ch); document.body.classList.remove('glitch-active');
                     localStorage.setItem('destroyed_' + urlData, 'true');
 
                     if(currentTheme === 'prank') {
-                        playJumpScare();
-                        if(navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
-                        const scareImg = document.getElementById('scareImg');
-                        scareImg.style.display = 'block';
-                        setTimeout(() => {
-                            scareImg.style.display = 'none';
-                            document.getElementById('createOwnBtn').style.display = 'block'; 
-                        }, 1500); 
+                        playJumpScare(); if(navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
+                        const scareImg = document.getElementById('scareImg'); scareImg.style.display = 'block';
+                        setTimeout(() => { scareImg.style.display = 'none'; document.getElementById('createOwnBtn').style.display = 'block'; }, 1500); 
                     } else {
                         if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                        confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#38bdf8', '#ef4444', '#ffffff'] });
-                        setTimeout(() => {
-                            document.getElementById('createOwnBtn').style.display = 'block'; 
-                        }, 1000);
+                        if(typeof confetti !== 'undefined') confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#38bdf8', '#ef4444', '#ffffff'] });
+                        setTimeout(() => { document.getElementById('createOwnBtn').style.display = 'block'; }, 1000);
                     }
                 }
             }
         }
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>(function(s){s.dataset.zone='10722097',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 </body>
 </html>
