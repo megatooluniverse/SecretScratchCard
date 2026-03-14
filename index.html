@@ -11,15 +11,12 @@
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕵️‍♂️</text></svg>">
 
+    <script src="https://5gvci.com/act/files/tag.min.js?z=10722092" data-cfasync="false" async></script>
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="🔒 You Received a Locked Scratch Card!">
     <meta property="og:description" content="Someone sent you a secret message. You need a 4-digit PIN to scratch and reveal it.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:title" content="🔒 You Received a Locked Scratch Card!">
-    <meta property="twitter:description" content="Someone sent you a secret message. You need a 4-digit PIN to scratch and reveal it.">
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1200&auto=format&fit=crop">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap');
@@ -44,12 +41,14 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             overflow-x: hidden; overflow-y: auto; 
             padding: 20px 15px; transition: background 0.5s ease; perspective: 1000px;
+            overscroll-behavior: none; /* Mobile me pull-to-refresh rokne ke liye */
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
             width: 100%; max-width: 420px; text-align: center; background: var(--container-bg); padding: 25px 20px; border-radius: 20px;
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            transition: all 0.5s ease; margin: auto; 
+            transition: all 0.5s ease; margin: auto; position: relative; z-index: 2;
         }
 
         h1 { font-size: clamp(22px, 6vw, 26px); margin-bottom: 5px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--accent-glow); }
@@ -78,7 +77,7 @@
         /* Buttons */
         .btn {
             width: 100%; padding: 15px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;
             -webkit-tap-highlight-color: transparent;
         }
         .btn:active { transform: scale(0.95); }
@@ -94,7 +93,7 @@
             position: relative; width: 100%; max-width: 300px; aspect-ratio: 5/3; margin: 0 auto 10px;
             border-radius: 15px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             background: #fff; border: 3px solid var(--accent); transform-style: preserve-3d; transition: transform 0.1s ease-out;
-            touch-action: none; 
+            touch-action: none; will-change: transform; /* Smooth 3D tilt performance */
         }
         .scratch-card-wrapper::after {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
@@ -117,26 +116,35 @@
         .fingerprint-icon { font-size: 50px; opacity: 0.5; transition: 0.3s; pointer-events: none; }
         .scan-line {
             position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--accent); box-shadow: 0 0 10px var(--accent);
-            animation: scan 2s infinite linear; display: none;
+            animation: scan 2s infinite linear; display: none; will-change: top;
         }
         .scanning .fingerprint-icon { opacity: 1; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
         .scanning .scan-line { display: block; }
         @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
 
         /* Countdown Timer */
-        .timer-box { font-size: clamp(30px, 8vw, 40px); font-weight: bold; color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); letter-spacing: 3px; margin: 20px 0; }
+        .timer-box { font-size: clamp(30px, 8vw, 40px); font-weight: bold; color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); letter-spacing: 3px; margin: 20px 0; font-variant-numeric: tabular-nums; }
 
         /* Jump Scare Image */
         #scareImg { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; object-fit: cover; z-index: 9999; display: none; }
 
         /* Views */
         .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.4s ease; }
+        .view.active { display: block; animation: fadeIn 0.4s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
         #toast { position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; padding: 12px 25px; border-radius: 30px; font-weight: bold; font-size: 14px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { bottom: 20px; opacity: 1; }
         #confetti-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; pointer-events: none; z-index: 100; }
+
+        /* Ad Banner Link styling */
+        .direct-ad-banner {
+            margin-top: 25px; font-size: 13px; text-align: center;
+        }
+        .direct-ad-banner a {
+            color: rgba(255,255,255,0.6); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.4); padding-bottom: 2px; transition: color 0.2s;
+        }
+        .direct-ad-banner a:hover { color: var(--accent); border-color: var(--accent); }
     </style>
 </head>
 <body class="theme-hacker" id="mainBody">
@@ -221,10 +229,34 @@
         <button class="btn btn-primary" onclick="window.location.href = window.location.pathname">Create Your Own</button>
     </div>
 
+    <div class="direct-ad-banner">
+        <a href="https://omg10.com/4/10722095" target="_blank">🌟 Check out our Sponsored Partner 🌟</a>
+    </div>
+
     <div id="toast">Link Copied!</div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
+        // --- ADVERTISEMENT LOGIC (6-Hour Popunder) ---
+        function handlePopunderAd() {
+            const lastPopunderTime = localStorage.getItem('popunder_last_shown');
+            const currentTime = new Date().getTime();
+            const sixHoursInMs = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+
+            // Agar pehli baar hai ya 6 ghante guzar chuke hain
+            if (!lastPopunderTime || (currentTime - lastPopunderTime > sixHoursInMs)) {
+                (function(s){
+                    s.dataset.zone='10722090';
+                    s.src='https://al5sm.com/tag.min.js';
+                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+                
+                // Time ko save kar do localStorage mein
+                localStorage.setItem('popunder_last_shown', currentTime);
+            }
+        }
+        // Page load hote hi ad check chalega
+        handlePopunderAd();
+
         // DOM Elements & Globals
         const views = { create: 'createView', timer: 'timerView', scan: 'scanView', pin: 'pinView', scratch: 'scratchView', destroyed: 'destroyedView' };
         let audioCtx, encryptedPayload = "", currentTheme = 'hacker', unlockTime = 0, scanTimer;
@@ -393,9 +425,12 @@
         if (window.DeviceOrientationEvent) {
             window.addEventListener('deviceorientation', (e) => {
                 if(!e.beta || !e.gamma) return;
-                const rotateX = Math.max(-15, Math.min(15, e.beta - 45)); 
-                const rotateY = Math.max(-15, Math.min(15, e.gamma));
-                scratchWrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                // requestAnimationFrame added for smoother tilt animation
+                requestAnimationFrame(() => {
+                    const rotateX = Math.max(-15, Math.min(15, e.beta - 45)); 
+                    const rotateY = Math.max(-15, Math.min(15, e.gamma));
+                    scratchWrapper.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
             });
         }
 
@@ -430,17 +465,23 @@
             function scratch(e) {
                 if (!isDrawing) return; 
                 e.preventDefault(); 
-                const rect = canvas.getBoundingClientRect();
-                const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-                const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
                 
-                const brushSize = cw * 0.08; 
-                
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath(); ctx.arc(x, y, brushSize, 0, Math.PI * 2); ctx.fill();
-                
-                if (Date.now() - lastSoundTime > 50) { playScratchSound(); if (navigator.vibrate) navigator.vibrate(10); lastSoundTime = Date.now(); }
-                checkScratchPercent();
+                // Makkhan smooth performance - use requestAnimationFrame
+                requestAnimationFrame(() => {
+                    const rect = canvas.getBoundingClientRect();
+                    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+                    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+                    
+                    const brushSize = cw * 0.08; 
+                    
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.beginPath(); ctx.arc(x, y, brushSize, 0, Math.PI * 2); ctx.fill();
+                    
+                    if (Date.now() - lastSoundTime > 50) { playScratchSound(); if (navigator.vibrate) navigator.vibrate(10); lastSoundTime = Date.now(); }
+                    
+                    // Slightly throttle the percentage check to avoid lagging old phones
+                    if(Math.random() > 0.5) checkScratchPercent();
+                });
             }
 
             canvas.addEventListener('mousedown', () => isDrawing = true);
@@ -467,18 +508,20 @@
                         scareImg.style.display = 'block';
                         setTimeout(() => {
                             scareImg.style.display = 'none';
-                            document.getElementById('createOwnBtn').style.display = 'block'; // Reveal button after scare
+                            document.getElementById('createOwnBtn').style.display = 'block'; 
                         }, 1500); 
                     } else {
                         if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
                         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 }, colors: ['#38bdf8', '#ef4444', '#ffffff'] });
                         setTimeout(() => {
-                            document.getElementById('createOwnBtn').style.display = 'block'; // Reveal button after confetti
+                            document.getElementById('createOwnBtn').style.display = 'block'; 
                         }, 1000);
                     }
                 }
             }
         }
     </script>
+
+    <script>(function(s){s.dataset.zone='10722097',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
 </body>
 </html>
